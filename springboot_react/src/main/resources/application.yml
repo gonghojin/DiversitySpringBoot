@@ -1,0 +1,9 @@
+spring:
+#  data:
+#    rest:
+#      base-path: /api
+  devtools:
+    liverload:
+      enabled: true
+  freemarker:
+    cache:false
