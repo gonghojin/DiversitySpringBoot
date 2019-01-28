@@ -1,11 +1,22 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Beer",
+  "name": "Good Beer",
   "icons": [
     {
       "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    /*
+      왜 추가?
+      - PWA를 적용하였기 때문에, 사용자가 홈화면에 앱을 추가하면 휴대대기기에서 표시할 아이콘이 필요하다.
+
+      https://developers.google.com/web/tools/lighthouse/audits/manifest-contains-192px-icon?hl=ko
+    */
+    {
+      "src": "beer.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ],
   "start_url": "./index.html",
