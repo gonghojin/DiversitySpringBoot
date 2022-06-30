@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
@@ -23,4 +24,13 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
 	@Query("select m from Member m where m.username in :names")
 	List<Member> findByNames(@Param("names") List<String> names);
+
+	/*
+		반환 타입
+	 */
+	List<Member> findByUsername(String name); // 컬렉션: 조회 결과 없을 시 빈 컬렉션 반환
+
+	Member findMemberByUsername(String name); // 단건 : 결과가 없을 시 null 반환, 2건 이상 NonUniqueResultException
+
+	Optional<Member> findOptionalByUsername(String name);// 단건 Optional
 }
