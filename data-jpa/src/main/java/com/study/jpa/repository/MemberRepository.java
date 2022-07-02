@@ -17,7 +17,7 @@ import javax.persistence.QueryHint;
 import java.util.List;
 import java.util.Optional;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
 	// 아래의 메서드가 없어도
 	@Query("select m from Member m where m.username= :username and m.age = :age")
