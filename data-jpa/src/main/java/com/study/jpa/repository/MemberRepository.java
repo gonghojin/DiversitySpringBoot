@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -59,4 +60,22 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	 */
 	@Query(value = "select m from Member m", countQuery = "select count(m.username)from Member m")
 	Page<Member> findMemberAllCountBy(Pageable pageable);
+
+	/*
+		벌크성 수정, 삭제 쿼리는 @Modifying 어노테이션 사용이 필요
+		또한, 벌크성 쿼리를 실행하고 나서 영속성 컨텍스트를 초기화 해주어야 한다.
+		: 이 옵션 없이 같은 트랜잭션 안에서 조회를 할 경우, 영속성 컨텍스트에 과거 값이 남아서 문제가 될 수 있음.
+		따라서 만약 조회해야 한다면 꼭 영속석 컨텍스트를 초기화
+
+		참고:
+		벌크 연산은 영속성 컨텍스트를 무시하고 실행하기 떄문에(jpql이므로, db에 직접 쿼리),  영속성 컨텍스트에 있는 엔티티의 상태와
+		DB에 엔티티 상태가 다름
+
+		권장하는 방안
+		1. 영속성 컨텍스에 엔티티가 없는 상태에서 벌크연산을 먼저 실행
+		2. 부득이하게 영속성 컨텍스트에 엔티티가 있으면 벌크 연산 직후 영속성 컨텍스트를 초기화한다.
+	*/
+	@Modifying(clearAutomatically = true)
+	@Query("update Member m set m.age = m.age + 1 where m.age >= :age")
+	int bulkAgePlus(@Param("age") int age);
 }
