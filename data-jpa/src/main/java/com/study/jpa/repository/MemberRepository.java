@@ -10,8 +10,10 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.query.Param;
 
+import javax.persistence.QueryHint;
 import java.util.List;
 import java.util.Optional;
 
@@ -101,4 +103,12 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	// 메서드 이름의 쿼리에서 특히 편리함
 	@EntityGraph(attributePaths = {"team"})
 	List<Member> findEntityGraphByUsername(String username);
+
+	/*
+		힌트는 읽기 전용으로 만들어셔, 스냅샵을 통한 변경 감지 절차를 제거 하는 것
+		하지만 리소스 투자 대비 효율적이진 않음, 트래픽이 많은 메서드에서나 필요하지만,
+		애초에 트래픽이 많은 메서드는 레디스 같은 걸로 보완을 해야함
+	 */
+	@QueryHints(value = @QueryHint(name = "org.hibernate.readOnly", value = "true"))
+	Member findReadOnlyByUsername(String username);
 }

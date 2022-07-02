@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,9 @@ class MemberRepositoryTest {
 
 	@Autowired
 	MemberRepository memberRepository;
+
+	@Autowired
+	EntityManager em;
 
 	@Test
 	public void testMember() {
@@ -117,5 +121,17 @@ class MemberRepositoryTest {
 
 		//then
 		assertThat(resultCount).isEqualTo(3);
+	}
+
+	@Test
+	public void queryHint() throws Exception {
+		//given
+		memberRepository.save(new Member("member1", 10));
+		em.flush();
+		em.clear();
+		//when
+		Member member = memberRepository.findReadOnlyByUsername("member1");
+		member.setUsername("member2");
+		em.flush(); //Update Query 실행X
 	}
 }
