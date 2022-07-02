@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -78,4 +79,26 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	@Modifying(clearAutomatically = true)
 	@Query("update Member m set m.age = m.age + 1 where m.age >= :age")
 	int bulkAgePlus(@Param("age") int age);
+
+	// JPQL 패치 조인
+	@Query("select m from Member m left join fetch m.team")
+	List<Member> findMemberFetchJoin();
+
+	/*
+		스프링 데이터 JPA는 엔티티 그래프 기능을 제공하여, JPQL 없이도 폐치 조인을 사용할 수 있도록 지원
+		- 단순한 폐치 조인은 EntityGraph를, 복잡한 폐치조인은 JPQL로~
+	 */
+	// 공통 메서드 오버라이드
+	@Override
+	@EntityGraph(attributePaths = "team")
+	List<Member> findAll();
+
+	// JPQL + 엔티티 그래프
+	@EntityGraph(attributePaths = {"team"})
+	@Query("select m from Member m")
+	List<Member> findMemberEntityGraph();
+
+	// 메서드 이름의 쿼리에서 특히 편리함
+	@EntityGraph(attributePaths = {"team"})
+	List<Member> findEntityGraphByUsername(String username);
 }
