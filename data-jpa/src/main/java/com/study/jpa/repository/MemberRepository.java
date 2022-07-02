@@ -2,6 +2,10 @@ package com.study.jpa.repository;
 
 import com.study.jpa.dto.MemberDto;
 import com.study.jpa.entity.Member;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -33,4 +37,26 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	Member findMemberByUsername(String name); // 단건 : 결과가 없을 시 null 반환, 2건 이상 NonUniqueResultException
 
 	Optional<Member> findOptionalByUsername(String name);// 단건 Optional
+
+	/*
+		페이징과 정렬
+
+	Page<Member> findByUsername(String name, Pageable pageable); // count 쿼리 사용
+
+	Slice<Member> findSliceByUsername(String name, Pageable pageable); // count 쿼리 사용 안함
+
+	List<Member> findMemberByUsername(String name, Pageable pageable); // count 쿼리 사용 안함
+
+	List<Member> findByUsername(String name, Sort sort);
+ 	*/
+
+	Page<Member> findByAge(int age, Pageable pageable);
+
+	/*
+		count 쿼리를 다음과 같이 분리할 수 있음
+		: 카운트 쿼리 분리(이건 복잡한 sql에서 사용, 데이터는 left join, 카운트는 left join 안해도 됨)
+		실무에서 매우 중요!!! (전체 count 쿼리는 매우 무겁다.)
+	 */
+	@Query(value = "select m from Member m", countQuery = "select count(m.username)from Member m")
+	Page<Member> findMemberAllCountBy(Pageable pageable);
 }
