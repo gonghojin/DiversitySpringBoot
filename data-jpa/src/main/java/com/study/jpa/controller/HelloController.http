@@ -1,0 +1,4 @@
+# page : 현재 페이지, 0부터 시작
+# size : 한 페이지에 노출한 데이터 건수
+# sort : 정렬 조건을 정의 ( asc는 생략 가능)
+GET http://localhost:8080/members?page=0 & size=3 & sort=id,desc & sort=username,desc

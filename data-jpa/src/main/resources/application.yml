@@ -11,7 +11,15 @@ spring:
       hibernate:
         # show_sql: true
         format_sql: true
+# 글로벌로 페이징 사이즈 설정 가능
+# 개별 사이즈는 컨트롤러의 파라미터에서
+# @PageableDefault(size = 12, sort = "username", direction = Sort.Direction.DESC) Pageable pageable
 
+#  data:
+#    web:
+#      pageable:
+#        default-page-size: 20 # 기본 페이즈 사이즈
+#        max-page-size: 2000 # 최대 페이즈 사이즈
 logging.level:
   org.hibernate.SQL: debug
 # org.hibernate.type: trace
