@@ -5,12 +5,15 @@ import com.gongdel.dsl.entity.QMember;
 import com.gongdel.dsl.entity.Team;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import java.util.List;
 
 import static com.gongdel.dsl.entity.QMember.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -69,5 +72,30 @@ public class QuerydslBasicTest {
 				.fetchOne();
 
 		assertThat(findMember.getUsername()).isEqualTo("member1");
+	}
+
+	@Test
+	void search() {
+		Member findMember = queryFactory
+				.selectFrom(member)
+				.where(member.username.eq("member1")
+						.and(member.age.eq(10))
+				).fetchOne();
+
+		assertThat(findMember.getUsername()).isEqualTo("member1");
+
+	}
+
+	@Test
+	@DisplayName("AND 조건을 파라미터로 처리")
+	public void searchAndParam() {
+		List<Member> member1 = queryFactory
+				.selectFrom(member)
+				.where(member.username.eq("member1"),
+						member.age.eq(10)
+				)
+				.fetch();
+		assertThat(member1.size()).isEqualTo(1);
+
 	}
 }
