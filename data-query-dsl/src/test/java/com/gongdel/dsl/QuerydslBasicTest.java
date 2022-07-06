@@ -21,8 +21,18 @@ public class QuerydslBasicTest {
 	@PersistenceContext
 	EntityManager em;
 
+	/*
+		필드로 제공 시 동시성 문제 발생?
+		NO!!
+		스프링 프레임워크는 여러 쓰게드에서 동시에 같은 EntityManager에 접근해도,
+		트랜잭션마다 별도의 영속성 컨텍스트를 제공하기 떄문에, 동시성 문제 발생 안함
+	 */
+	JPAQueryFactory queryFactory;
+
 	@BeforeEach
 	void setUp() {
+		queryFactory = new JPAQueryFactory(em);
+
 		Team teamA = new Team("teamA");
 		Team teamB = new Team("teamB");
 		em.persist(teamA);
@@ -50,7 +60,7 @@ public class QuerydslBasicTest {
 
 	@Test
 	void startQuerydsl() {
-		JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
 		QMember m = new QMember("m");
 		Member findMember = queryFactory
 				.select(m)
