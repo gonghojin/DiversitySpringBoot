@@ -3,6 +3,7 @@ package com.gongdel.dsl;
 import com.gongdel.dsl.entity.Member;
 import com.gongdel.dsl.entity.QMember;
 import com.gongdel.dsl.entity.Team;
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -97,5 +98,28 @@ public class QuerydslBasicTest {
 				.fetch();
 		assertThat(member1.size()).isEqualTo(1);
 
+	}
+
+	@Test
+	void 결과조회() {
+		// List
+		List<Member> fetch = queryFactory.selectFrom(member)
+				.fetch();
+
+		// 단건
+	/*	Member findMember1 = queryFactory.selectFrom(member)
+				.fetchOne();
+*/
+
+		// 처음 한 건 조회
+		Member findMember2 = queryFactory.selectFrom(member)
+				.fetchFirst();
+
+		// 페이징에서 사용
+		QueryResults<Member> memberQueryResults = queryFactory.selectFrom(member)
+				.fetchResults();
+
+		long l = queryFactory.selectFrom(member)
+				.fetchCount();
 	}
 }
