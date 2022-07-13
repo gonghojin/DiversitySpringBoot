@@ -5,11 +5,15 @@ import com.gongdel.dsl.dto.UserDto;
 import com.gongdel.dsl.entity.Member;
 import com.gongdel.dsl.entity.QMember;
 import com.gongdel.dsl.entity.Team;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -131,5 +135,70 @@ public class QuerydslAdvanceTest {
 						member.age
 				)).from(member)
 				.fetch();
+	}
+
+	/*
+		 Dto에 어노테이션을 다는 @QueryProjection도 있다.
+		 컴파일러로 타입을 체크 할 수 있어 가장 안전하지만,
+		 DTO에 QueryDSL 어노테이션을 유지해야 하는 점과
+		 DTO까지 Q 파일을 생성해야하는 단점이 있음.
+	 */
+
+
+	// 동적 쿼리를 해결하는 두가지 방식
+	// - BooleanBuilder
+	// Where 다중 파라미터 사용
+
+	@Test
+	void 동적쿼리_BooleanBuilder() {
+		String usernameparam = "member1";
+		Integer ageParam = 10;
+
+		List<Member> result = searchMember1(usernameparam, ageParam);
+		Assertions.assertThat(result.size()).isEqualTo(1);
+	}
+
+	private List<Member> searchMember1(String usernameparam, Integer ageParam) {
+		BooleanBuilder builder = new BooleanBuilder();
+		if (usernameparam != null) {
+			builder.and(member.username.eq(usernameparam));
+		}
+		if (ageParam != null) {
+			builder.and(member.age.eq(ageParam));
+		}
+
+		return queryFactory
+				.selectFrom(member)
+				.where(builder)
+				.fetch();
+	}
+
+	/*
+		where 조건에 null 값은 무시
+		메서드를 재활용 가능
+		쿼리 가독성 높음
+	 */
+	@Test
+	void 동적쿼리_WhereParam() {
+		String usernameParam = "member1";
+		Integer ageParam = 10;
+
+		searhMember2(usernameParam, ageParam);
+	}
+
+	private List<Member> searhMember2(String usernameParam, Integer ageParam) {
+		return queryFactory
+				.selectFrom(member)
+				.where(usernameEq(usernameParam), ageEq(ageParam))
+				.fetch();
+
+	}
+
+	private BooleanExpression usernameEq(String usernameParam) {
+		return usernameParam != null ? member.username.eq(usernameParam) : null;
+	}
+
+	private BooleanExpression ageEq(Integer ageParam) {
+		return ageParam != null ? member.age.eq(ageParam) : null;
 	}
 }
