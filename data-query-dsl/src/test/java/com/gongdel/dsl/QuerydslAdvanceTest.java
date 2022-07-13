@@ -201,4 +201,38 @@ public class QuerydslAdvanceTest {
 	private BooleanExpression ageEq(Integer ageParam) {
 		return ageParam != null ? member.age.eq(ageParam) : null;
 	}
+
+	/*
+		수정 삭제 벌크 연산
+
+		주의: JPQL 배치와 마찬가지로, 영속성 컨텍스트에 있는 엔티티를 무시하고 실행되기 떄문에
+		배치 쿼리를 실행하고 나면 영속성 컨텍스트를 초기화 하는 것이 안전
+	 */
+
+	@Test
+	@DisplayName("쿼리 한번으로 대량 데이터 수정")
+	void updateQuery() {
+		queryFactory
+				.update(member)
+				.set(member.username, "비회원")
+				.where(member.age.lt(28))
+				.execute();
+	}
+
+	@Test
+	@DisplayName("기존 숫자에 1 더하기")
+	void updateAdd() {
+		queryFactory
+				.update(member)
+				.set(member.age, member.age.add(1))
+				.execute();
+	}
+
+	@Test
+	void deleteQuery() {
+		queryFactory
+				.delete(member)
+				.where(member.age.gt(18))
+				.execute();
+	}
 }
