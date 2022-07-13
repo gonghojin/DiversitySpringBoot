@@ -122,4 +122,14 @@ public class QuerydslAdvanceTest {
 				.from(member)
 				.fetch();
 	}
+
+	@Test
+	void projectionConstruct() {
+		List<MemberDto> result = queryFactory
+				.select(Projections.constructor(MemberDto.class,
+						member.username,
+						member.age
+				)).from(member)
+				.fetch();
+	}
 }
