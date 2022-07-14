@@ -1,27 +1,22 @@
 package com.gongdel.dsl.repository;
 
 import com.gongdel.dsl.entity.Member;
-import com.gongdel.dsl.entity.QMember;
 import com.querydsl.jpa.JPQLQueryFactory;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
-import static com.gongdel.dsl.entity.QMember.*;
+import static com.gongdel.dsl.entity.QMember.member;
 
 @Repository
+@RequiredArgsConstructor
 public class MemberJpaRepository {
 
-	private final EntityManager em;
 	private final JPQLQueryFactory queryFactory;
-
-	public MemberJpaRepository(EntityManager em) {
-		this.em = em;
-		this.queryFactory = new JPAQueryFactory(em);
-	}
+	private final EntityManager em;
 
 	public void save(Member member) {
 		em.persist(member);
