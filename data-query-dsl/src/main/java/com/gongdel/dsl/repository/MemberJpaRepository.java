@@ -1,17 +1,13 @@
 package com.gongdel.dsl.repository;
 
-import com.gongdel.dsl.dto.MemberDto;
 import com.gongdel.dsl.dto.MemberSearchCondition;
 import com.gongdel.dsl.dto.MemberTeamDto;
 import com.gongdel.dsl.dto.QMemberTeamDto;
 import com.gongdel.dsl.entity.Member;
-import com.gongdel.dsl.entity.QTeam;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -19,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.gongdel.dsl.entity.QMember.member;
-import static com.gongdel.dsl.entity.QTeam.*;
+import static com.gongdel.dsl.entity.QTeam.team;
 import static org.apache.logging.log4j.util.Strings.isEmpty;
 import static org.springframework.util.StringUtils.hasText;
 
