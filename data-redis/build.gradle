@@ -19,10 +19,12 @@ dependencies {
     implementation 'redis.clients:jedis:3.6.0'
     implementation "org.mapstruct:mapstruct:1.4.2.Final"
 
+    compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'mysql:mysql-connector-java:8.0.18'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor "org.mapstruct:mapstruct-processor:1.4.2.Final"
 }
 
