@@ -1,55 +1,46 @@
 package com.gongdel.algorithm.test;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 class Solution {
 
-	class Process {
+	class Print {
+		int idx;
+		int priority;
 
-		int progress;
-		int speed;
-
-		public Process(int progress, int speed) {
-			this.progress = progress;
-			this.speed = speed;
+		public Print(int idx, int priority) {
+			this.idx = idx;
+			this.priority = priority;
 		}
 	}
 
-	public int[] solution(int[] progresses, int[] speeds) {
-		Queue<Process> que = new LinkedList<>();
-		for (int i = 0; i < progresses.length; i++) {
-			int progress = progresses[i];
-			int speed = speeds[i];
-			que.add(new Process(progress, speed));
+	public int solution(int[] priorities, int location) {
+		Queue<Print> que = new LinkedList<>();
+		Queue<Integer> priorityQue = new PriorityQueue<>(Comparator.reverseOrder());
+
+		for (int i = 0; i < priorities.length; i++) {
+			int priority = priorities[i];
+			que.offer(new Print(i, priority));
+			priorityQue.add(priority);
 		}
 
-		ArrayList<Integer> list = new ArrayList<>();
-		int day = 0;
+		int answer = 0;
 		while (!que.isEmpty()) {
-			day++;
-			Process peek = que.peek();
-			if (peek.progress + (day * peek.speed) >= 100) {
-				int temp = 1;
-				que.poll();
-				while (!que.isEmpty()) {
-					Process peek1 = que.peek();
-					if (peek1.progress + (day * peek1.speed) >= 100) {
-						temp++;
-						que.poll();
-					} else {
-						break;
-					}
+			Print print = que.poll();
+			if (print.priority == priorityQue.peek()) {
+				answer++;
+				priorityQue.poll();
+				if (print.idx == location) {
+					break;
 				}
-				list.add(temp);
+			} else {
+				que.offer(print);
 			}
 		}
 
-		int[] answer = new int[list.size()];
-		for (int i = 0; i < list.size(); i++) {
-			answer[i] = list.get(i);
-		}
 		return answer;
 	}
 
@@ -57,14 +48,14 @@ class Solution {
 		Solution solution = new Solution();
 //		String ar1 = "hit";
 //		String target = "cog";
-		int[] ar1 = new int[]{93, 30, 55};
+		int[] ar1 = new int[]{2, 1, 3, 2};
 		int[] ar2 = new int[]{1, 30, 5};
 
 
 		//		String[] ar2 = new String[]{"eden", "kiki"};
 
 
-		int[] solution1 = solution.solution(ar1, ar2);
+		int solution1 = solution.solution(ar1, 2);
 		System.out.println(solution1);
 	}
 }
