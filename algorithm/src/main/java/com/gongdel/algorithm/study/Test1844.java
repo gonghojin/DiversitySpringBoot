@@ -1,4 +1,4 @@
-package com.gongdel.algorithm;
+package com.gongdel.algorithm.study;
 
 import java.util.LinkedList;
 import java.util.Queue;
